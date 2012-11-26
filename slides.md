@@ -1,10 +1,6 @@
-# Prolegomena
 
-## Prolegomena
-
-* Sorry, no ontology yet - this is work in progress.
-* But a short lesson in data modeling does not harm.
-* Feedback and contribution are welcome!
+* Sorry, no final ontology yet, but work in progress.
+* Feedback and contributions are very welcome!
 
 # Library data in the Semantic Web
 
@@ -15,9 +11,11 @@
   <http://hdl.handle.net/10760/8021>.
 * Ian Davis, Richard Newman, Bruce D’Arcus (2005): *Expression of Core FRBR Concepts 
   in RDF* <http://vocab.org/frbr/>.
-* Talis, Talis, Talis.
-* W3C (2011): Library Linked Data Incubator Group Final Report
+* Talis!
+* Library Linked Data Incubator Group Final Report
   <http://www.w3.org/2005/Incubator/lld/XGR-lld/>.
+* LoC BIBFRAME (successor of MARC21) will be LOD:
+  <http://www.loc.gov/marc/transition/>.
 
 ## ...data is being published.
 
@@ -29,31 +27,28 @@
 * LoC (authorities): <http://id.loc.gov/>
 * Lobid (organizations): <http://lobid.org/>
 * Europeana (authorities): <http://data.europeana.eu/>
-
-* ...your library next at\
+* ...your library next (?)\
   <http://datahub.io/group/lld>
 
 ## What kind of library data?
 
-* bibliographic data (title, author, date, stuff...)
+* bibliographic data (title, author, date...)
 * authority data (thesauri, classification, subjects...)
-* organizations (to a very limited degree)
+* organizations (to a limited degree...)
 
 *Is this really the core stuff that libraries deal with day by day?*
 
-## Questions you should be nervous about (look away)
+## Questions you should be nervous about
 
-* Where are the practical use cases?[^usecases]
-* The data is often over-modeled *how it should be* instead of 
-  how it actually is, isn’t it? (actually it is dirty)
+* How does LOD actually increase efficency (to safe money)?
+* Does LOD model how data actually is (instead of how it should be)?
+  In fact practical library data is quite dirty.
 * What about the data that makes libraries unique:
 
     * Not bibliographic data
     * Data about holdings, access, buildings, opening hours...
 
 * What about **the patrons**?
-
-[^usecases]: Apart from http://www.w3.org/2005/Incubator/lld/XGR-lld-usecase/
 
 # Patron information
 
@@ -72,64 +67,58 @@ Eventually it is not that much
 
 * Privacy: it is not Open Data
 * Difficulties to get data out of legacy systems
-* Lack of motivation?
+* Lack of motivation (is it just boring?)
 
 ## Motivation at GBV
 
-* Access to library patron information in mobile apps and discovery interfaces
-* Primarily an API
-* Alignement with RDF only as by-product to facilitate reuse and to enforce
-  quality management
+* Access to library patron information\
+  for mobile apps and discovery interfaces
+* Primarily required as API
+* Alignment with RDF only as by-product\
+  to facilitate reuse and to enforce quality
 * Same procedure as DAIA (API, data model & ontology)
 
-## Existing ontologies
+## Potential ontologies to build on
 
 * BIBO, FRBR, RDA... (bibliographic data)
 * FOAF (people)
 * SIOC (online communities, access, services)
-* DAIA (availability and library services, such as loan)
+* DAIA (availability and library services)
+* Organization ontology (organizations and places)
+* OWL-S (discontinued Service Ontology)
 * ...
-* OWL-S (discontinued Service Ontology, includes e.g. Shopping Cart)
-* ...
-
-## Data modeling rules of thumb (at least of my own thumbs) XXX
-
-* RDFS and OWL are **not** conceptual modeling languages but
-  schema languages, such as XSD, SQL Schema etc. Better don’t 
-  begin with RDF at all.
-* Begin with
-  * Requirements: what information do we need?
-  * Possibilites: what information do we have?
-* Strip down to the least common denominator
-
-* Begin with paper and pencil
-* If it does not have an URI it does not exist
-
 
 # Essential patron information
 
+## Data modeling rules of thumb
+
+* RDFS and OWL are **not** conceptual modeling languages but
+  schema languages, such as XSD, SQL Schema etc.
+* Better don’t begin with RDF at all.
+* Begin with:
+
+    * **Requirements:** what information do we need?
+    * **Possibilites:** what information do we have?
+
+* Strip down to the least common denominator
+
 ## Which patron information do we care about most?
 
-* Personal data (name, email ...)
-* Account data (state, type, expiration...)
-* Loans and reservations
+1. Personal data (name, email ...) : **FOAF**
+2. Account data (state, type, expiration, fees...) : **?**
+3. Loans and reservations : **?**
 
-## Which patron information do we care about most?
+## 2. Account data
 
-* Personal data (name, email ...) **FOAF**
-* Account data (state, type, expiration, fees...) **!?**
-* Loans and reservations **!?**
+Instances of `foaf:OnlineAccount` or `sioc:UserAccount` with:
 
-## Account data
-
-* `foaf:OnlineAccount` or `sioc:UserAccount`
 * date of expiration (*no ontology found yet*)
 * fees (*not ontology found yet*)
 * account states and types
  
 ## Account states and types
 
-The general state of of patron’s account in a library.
+The general state of a patron’s account in a library.
 
   0. active (may use most services)
   1. inactive (may not use most services)
@@ -138,8 +127,8 @@ The general state of of patron’s account in a library.
   n. inactive because of ...
 
 This does not involve types of accounts (e.g. student, professor, external user
-etc.) because it’s difficult to find a consensus about account types among all
-libraries. Such types may be mapped to `sioc:Role`.
+etc. each as `sioc:Role`) because it’s difficult to find a consensus about
+account types among all libraries.
 
 ## Account states in RDF
 
@@ -160,50 +149,42 @@ c) Open world assumption with active as default
 
         _:pa lib:isInactiveBecause ?reason .
 
-## Loans and reservations
+## 3. Loans and reservations: What information?
 
-= links between library patrons and documents held by libraries.
+Each loan or reservation combines information about
 
-## Loans and reservations
+I) a library patron
+II) a document held by a library
+III) a current state of the loan or reservation
+IV) additional properties such as:
+    
+    * date issued
+    * number or renewals
+    * where to pick up the document
+    * ...
 
-Each loan or reservation is a (possibly n-ary) relation between document and patron. 
-
-* Which patron
-* Which document
-* Current state
-* Additional properties
-  * Date issued
-  * Number or renewals
-  * Possibility to cancel and/or renew
-  * Place to fulfill the request
-  * ...
-
-## Loans and reservations: which document?
+## II) A document held by a library
 
 * Patron might be interested in a specific work or edition
 * Most loans are about a specific copy
 
-## Loans and reservations: which document?
+## II) A document held by a library
 
 * Patron might be interested in a specific work or edition
 * Most loans are about a specific copy
 
 * Problem already addressed in DAIA ontology
 
-      [ a bibo:Document ] daia:exemplar [ a frbr:Item ] .
+         [ a bibo:Document ] daia:exemplar [ a frbr:Item ] .
 
 * At least two URIs for each request:
   
     * URI of the patron originally requested
-    * URI of the document the patron finally got
-    
+    * URI of the document the patron finally gets
 
-## Loans and reservations: 
+## III) Current document status for loan or reservation
 
-
-## Document status
-
-The current relation between a particular document and a particular patron.
+Relation between a particular document and a particular patron:
 
 0. no relation
 1. reserved (the document is not accesible for the patron yet, but it will be)
@@ -212,35 +193,41 @@ The current relation between a particular document and a particular patron.
 4. provided (the document is ready to be used by the patron)
 5. rejected (the document is not accesible at all)
 
-## Result
+# Summary
 
-We got an acronym!
+## First result: we got an acronym!
 
 **Patron Account Information API** (PAIA)
 
-![](img/paia.jpg)
+![Paia, Hawaii](img/paia.jpg)
 
-# Summary
+## Second result: conceptual model with basic definitions
 
-...
+* Patron account states: active, inactive, inactive++
+* At least two URIs for each document that is requested/loaned
+* Document status:\
+  none, reserved, ordered, held, provided, rejected
 
+## What’s next
 
-# Appendix
+* Implement PAIA as API to get real world data instead of toy 
+  examples.
+* Express this conceptual model in terms of RDF with existing
+  ontologies and a new PAIA ontology, yet to be created.
 
-## Sources
+# Sources
 
-The current specification of Patron Account Information API (PAIA) is available
-at <https://gbv.github.com/paia/>.
+----
 
-Source code and images of this presentation are available at
-<https://github.com/jakobib/swib2012> under CC-BY-SA.
+Current specification of Patron Account Information API: 
+<https://gbv.github.com/paia/>
 
-## Credits
+Source code of this presentation (CC-BY-SA):
+<https://github.com/jakobib/swib2012>
 
-Images from Wikimedia Commons:
+Images:
 
-* Paia beach looking east.jpg CC-BY-SA by Skier Dude
-
-Fair use images:
-
-* Nick Cardy: *Secret of the man-ape*. From beyond the unknown, issue 23, 1973
+* [Paia_beach_looking_east.jpg](http://commons.wikimedia.org/wiki/File:Paia_Beach_looking_east.jpg)
+  CC-BY-SA by Wikimedia Commons user Skier Dude.
+* Nick Cardy: *Secret of the man-ape*. From Beyond The Unknown, Issue 23, 1973.
+  CC-BY flickr user lincoln-log.
